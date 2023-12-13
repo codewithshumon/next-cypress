@@ -6,13 +6,15 @@ import clsx from 'clsx';
 
 import Banner from '../../../public/appBanner.png';
 import Cal from '../../../public/cal.png';
+import Check from '../../../public/icons/check.svg';
+import Diamond from '../../../public/icons/diamond.svg';
 
 import TitleSection from '@/components/landingPage/TitleSection';
 import { CustomCard } from '@/components/landingPage/CustomCard';
 import { Button } from '@/components/ui/button';
-import { CLIENTS, USERS } from '@/lib/constants';
+import { CLIENTS, PRICING_CARDS, PRICING_PLANS, USERS } from '@/lib/constants';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CardDescription, CardTitle } from '@/components/ui/card';
+import { CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 
 export default function HomePage() {
   return (
@@ -263,6 +265,92 @@ export default function HomePage() {
                 ></CustomCard>
               ))}
             </div>
+          ))}
+        </div>
+      </section>
+      <section className="mt-20 pb-20 px-4 md:px-6">
+        <TitleSection
+          title="The Perfect Plan For You"
+          subheading="Experience all the benefits of our platform. Select a plan that suits your needs and take your productivity to new heights."
+          pill="Pricing"
+        />
+        <div
+          className="flex
+        flex-col-reverse
+        sm:flex-row
+        gap-4
+        justify-center
+        sm:items-stretch
+        items-center
+        mt-10
+        "
+        >
+          {PRICING_CARDS.map((card) => (
+            <CustomCard
+              key={card.planType}
+              className={clsx(
+                'w-[300px] rounded-2xl dark:bg-black/40 backdrop-blur-3xl',
+                {
+                  'border-brand-primaryPurple/70':
+                    card.planType === PRICING_PLANS.proplan,
+                }
+              )}
+              cardHeader={
+                <CardTitle className="text-2xl font-semibold">
+                  {card.planType === PRICING_PLANS.proplan && (
+                    <>
+                      <div
+                        className="hidden dark:block w-full blur-[120px] rounded-full h-32
+                      absolute
+                      bg-brand-primaryPurple/80
+                      -z-10
+                      top-0"
+                      />
+                      <Image
+                        alt="Pro Plan Icon"
+                        src={Diamond}
+                        className=" absolute top-6 right-6"
+                      />
+                    </>
+                  )}
+                  {card.planType}
+                </CardTitle>
+              }
+              cardContent={
+                <CardContent className="p-0">
+                  <span className="font-normal text-2xl">${card.price}</span>
+                  {+card.price > 0 ? (
+                    <span className="dark:text-washed-purple-800 ml-1">
+                      /mo
+                    </span>
+                  ) : (
+                    ''
+                  )}
+                  <p className=" dark:text-washed-purple-800">
+                    {card.description}
+                  </p>
+                  <Button
+                    variant="btn-primary"
+                    className="whitespace-nowrap w-full mt-4"
+                  >
+                    {card.planType === PRICING_PLANS.proplan
+                      ? 'Go Pro'
+                      : 'Get Started'}
+                  </Button>
+                </CardContent>
+              }
+              cardFooter={
+                <ul className="font-normal flex flex-col gap-4">
+                  <small>{card.highlightFeature}</small>
+                  {card.freatures.map((feature) => (
+                    <li key={feature} className="flex items-center gap-2">
+                      <Image alt="Check Icon" src={Check} />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              }
+            />
           ))}
         </div>
       </section>
