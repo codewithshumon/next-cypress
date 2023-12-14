@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -11,7 +12,17 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormSchema } from '@/lib/type';
-import { Form } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import Loader from '@/components/Loader';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -43,6 +54,48 @@ const LoginPage = () => {
             nextCypress
           </span>
         </Link>
+        <FormDescription className="text-foreground/60">
+          An all-In-One Collaboration and Productivity Platform
+        </FormDescription>
+        <FormField
+          disabled={isLoading}
+          control={form.control}
+          name="email"
+          render={(field) => (
+            <FormItem>
+              <FormControl>
+                <Input type="email" placeholder="Email" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          disabled={isLoading}
+          control={form.control}
+          name="password"
+          render={(field) => (
+            <FormItem>
+              <FormControl>
+                <Input type="password" placeholder="Password" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        {submitError && <FormMessage>{submitError}</FormMessage>}
+        <Button
+          disabled={isLoading}
+          type="submit"
+          className="w-full p-6"
+          size="lg"
+        >
+          {!isLoading ? 'Login' : <Loader />}
+        </Button>
+        <span className="self-container">
+          Don't have account?{' '}
+          <Link href="signup" className="text-primary">
+            Sign Up
+          </Link>
+        </span>
       </form>
     </Form>
   );
