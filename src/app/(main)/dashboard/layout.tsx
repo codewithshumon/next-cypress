@@ -4,7 +4,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, params }) => {
-  return <main className="flex overflow-hidden">Layout</main>;
+  return <main className="flex overflow-hidden">{children}</main>;
 };
 
 export default Layout;
