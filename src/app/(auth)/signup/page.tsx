@@ -1,14 +1,14 @@
 'use client';
 
-import { z } from 'zod';
-import { useMemo, useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
 import clsx from 'clsx';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { useSearchParams } from 'next/navigation';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -18,14 +18,17 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import Loader from '@/components/Loader';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { MailCheck } from 'lucide-react';
+import { FormSchema } from '@/lib/type';
+import { actionSignUpUser } from '@/lib/serverAction/authActions';
 
 const SignUpFormSchema = z
   .object({
-    email: z.string().describe('Email').email('Invalid Email'),
+    email: z.string().describe('Email').email({ message: 'Invalid Email' }),
     password: z
       .string()
       .describe('Password')
@@ -36,27 +39,26 @@ const SignUpFormSchema = z
       .min(6, 'Password must be minimum 6 characters'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Passwords don't match.",
     path: ['confirmPassword'],
   });
+
 const Signup = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [submitError, setSubmitError] = useState('');
   const [confirmation, setConfirmation] = useState(false);
 
   const codeExchangeError = useMemo(() => {
     if (!searchParams) return '';
-
-    searchParams.get('error_description');
+    return searchParams.get('error_description');
   }, [searchParams]);
 
-  const confirmationAndErrorStyle = useMemo(
+  const confirmationAndErrorStyles = useMemo(
     () =>
       clsx('bg-primary', {
         'bg-red-500/10': codeExchangeError,
-        'text-red-700': codeExchangeError,
         'border-red-500/50': codeExchangeError,
+        'text-red-700': codeExchangeError,
       }),
     [codeExchangeError]
   );
@@ -68,8 +70,16 @@ const Signup = () => {
   });
 
   const isLoading = form.formState.isSubmitting;
-  const onSubmit = () => {};
-  const signUpHandler = () => {};
+  const onSubmit = async ({ email, password }: z.infer<typeof FormSchema>) => {
+    const { error } = await actionSignUpUser({ email, password });
+    if (error) {
+      setSubmitError(error.message);
+      form.reset();
+      return;
+    }
+    setConfirmation(true);
+  };
+
   return (
     <Form {...form}>
       <form
@@ -82,18 +92,31 @@ const Signup = () => {
         flex-col
         "
       >
-        <Link href="/" className="w-full flex justify-left items-center">
+        <Link
+          href="/"
+          className="
+          w-full
+          flex
+          justify-left
+          items-center"
+        >
           <Image
-            alt="Cypress Logo"
             src={'/cypresslogo.svg'}
+            alt="cypress Logo"
             width={50}
             height={50}
           />
-          <span className="font-semibold dark:text-white text-4xl first-letter:ml-2">
-            nextCypress
+          <span
+            className="font-semibold
+          dark:text-white text-4xl first-letter:ml-2"
+          >
+            cypress.
           </span>
         </Link>
-        <FormDescription className="text-foreground/60">
+        <FormDescription
+          className="
+        text-foreground/60"
+        >
           An all-In-One Collaboration and Productivity Platform
         </FormDescription>
         {!confirmation && !codeExchangeError && (
@@ -102,11 +125,12 @@ const Signup = () => {
               disabled={isLoading}
               control={form.control}
               name="email"
-              render={(field) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input type="email" placeholder="Email" {...field} />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -114,11 +138,12 @@ const Signup = () => {
               disabled={isLoading}
               control={form.control}
               name="password"
-              render={(field) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input type="password" placeholder="Password" {...field} />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -126,7 +151,7 @@ const Signup = () => {
               disabled={isLoading}
               control={form.control}
               name="confirmPassword"
-              render={(field) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
@@ -135,10 +160,11 @@ const Signup = () => {
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-            <Button disabled={isLoading} type="submit" className="w-full p-6">
+            <Button type="submit" className="w-full p-6" disabled={isLoading}>
               {!isLoading ? 'Create Account' : <Loader />}
             </Button>
           </>
@@ -146,17 +172,17 @@ const Signup = () => {
 
         {submitError && <FormMessage>{submitError}</FormMessage>}
         <span className="self-container">
-          Already have account?{' '}
-          <Link href="login" className="text-primary">
+          Already have an account?{' '}
+          <Link href="/login" className="text-primary">
             Login
           </Link>
         </span>
-        {confirmation && codeExchangeError && (
+        {(confirmation || codeExchangeError) && (
           <>
-            <Alert className={confirmationAndErrorStyle}>
-              {!codeExchangeError && <MailCheck className=" w-4 h-4" />}
+            <Alert className={confirmationAndErrorStyles}>
+              {!codeExchangeError && <MailCheck className="h-4 w-4" />}
               <AlertTitle>
-                {codeExchangeError ? 'Invalid Link' : 'Check your email'}
+                {codeExchangeError ? 'Invalid Link' : 'Check your email.'}
               </AlertTitle>
               <AlertDescription>
                 {codeExchangeError || 'An email confirmation has been sent.'}
