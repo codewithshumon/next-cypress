@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { DM_Sans } from 'next/font/google';
 import './globals.css';
-import { ThemeProvider } from '@/lib/providers/NextThemeProvider';
 import { twMerge } from 'tailwind-merge';
+
+import { ThemeProvider } from '@/lib/providers/NextThemeProvider';
+import AppStateProvider from '@/lib/providers/StateProvider';
 
 const inter = DM_Sans({ subsets: ['latin'] });
 
@@ -20,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={twMerge('bg-background', inter.className)}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          {children}
+          <AppStateProvider>{children}</AppStateProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -154,7 +154,7 @@ export const workspaces = pgTable('workspaces', {
 export const files = pgTable('files', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }),
-  text: text('text').notNull(),
+  title: text('title').notNull(),
   iconId: text('icon_id').notNull(),
   data: text('data'),
   inTrash: text('in_trash'),

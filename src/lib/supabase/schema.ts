@@ -44,7 +44,7 @@ export const folders = pgTable('folders', {
 export const files = pgTable('files', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }),
-  title: text('text').notNull(),
+  title: text('title').notNull(),
   iconId: text('icon_id').notNull(),
   data: text('data'),
   inTrash: text('in_trash'),
