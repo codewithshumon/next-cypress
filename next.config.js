@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  mages: {
+  images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'fmliqecnrxgzwvucipeu.supabase.co',
+        hostname: 'trwpdvwbemjoizraulfa.supabase.co',
         port: '',
         pathname: '**',
       },
