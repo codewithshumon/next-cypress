@@ -34,7 +34,6 @@ export const folders = pgTable('folders', {
   iconId: text('icon_id').notNull(),
   data: text('data'),
   inTrash: text('in_trash'),
-  logo: text('logo'),
   bannerUrl: text('banner_url'),
   workspaceId: uuid('workspace_id').references(() => workspaces.id, {
     onDelete: 'cascade',
