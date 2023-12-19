@@ -75,3 +75,7 @@ body {
     transform: translateX(-100%);
   }
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
