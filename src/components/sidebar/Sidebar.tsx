@@ -10,6 +10,7 @@ import {
 import { redirect } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import WorkspaceDropdown from './WorkspaceDropdown';
+import PlanUsage from './PlanUsage';
 
 interface SidebarProps {
   params: { workspaceId: string };
@@ -57,7 +58,11 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
             ...collaboratedWorkspaces,
             ...sharedWorkspaces,
           ].find((workspace) => workspace.id === params.workspaceId)}
-        ></WorkspaceDropdown>
+        />
+        <PlanUsage
+          foldersLength={workspaceFolderData?.length || 0}
+          subscription={subscriptionData}
+        />
       </div>
     </aside>
   );
