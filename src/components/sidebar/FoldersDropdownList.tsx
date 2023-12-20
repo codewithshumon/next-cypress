@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
+import { v4 } from 'uuid';
 import { useEffect, useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 
@@ -9,7 +10,6 @@ import Toottip from '../global/Toottip';
 import { useAppState } from '@/lib/providers/StateProvider';
 import { Folder } from '@/lib/supabase/supabaseTypes';
 import { useSupabaseUser } from '@/lib/providers/SupabaseUserProvider';
-import { v4 } from 'uuid';
 import { createFolder } from '@/lib/supabase/queries';
 import { useToast } from '../ui/use-toast';
 import { Accordion } from '../ui/accordion';
@@ -24,11 +24,12 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
   workspaceFolders,
   workspaceId,
 }) => {
-  const { toast } = useToast();
-  const { subscription } = useSupabaseUser();
   const { state, dispatch, folderId } = useAppState();
+  const { toast } = useToast();
   const [folders, setFolders] = useState(workspaceFolders);
+  const { subscription } = useSupabaseUser();
 
+  //effec set nitial satte server app state
   useEffect(() => {
     if (workspaceFolders.length > 0) {
       dispatch({
@@ -46,17 +47,21 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
       });
     }
   }, [workspaceFolders, workspaceId]);
+  //state
 
   useEffect(() => {
     setFolders(
       state.workspaces.find((workspace) => workspace.id === workspaceId)
         ?.folders || []
     );
-  }, [workspaceId, state.workspaces]);
+  }, [state]);
 
+  //add folder
   const addFolderHandler = async () => {
-    //if(folders.length >= 3 && !subscription)
-
+    // if (folders.length >= 3 && !subscription) {
+    //   setOpen(true);
+    //   return;
+    // }
     const newFolder: Folder = {
       data: null,
       id: v4(),
@@ -71,9 +76,7 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
       type: 'ADD_FOLDER',
       payload: { workspaceId, folder: { ...newFolder, files: [] } },
     });
-
     const { data, error } = await createFolder(newFolder);
-
     if (error) {
       toast({
         title: 'Error',
@@ -83,20 +86,44 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
     } else {
       toast({
         title: 'Success',
-        description: 'Created the folder',
+        description: 'Created folder.',
       });
     }
   };
 
   return (
     <>
-      <div className="flex sticky z-20 top-0 bg-background w-full h-10 group/title justify-between items-center pr-4 text-Neutrals/neutrals-8">
-        <span className="text-Neutrals-8 font-bold text-xs">FOLDERS</span>
+      <div
+        className="flex
+        sticky 
+        z-20 
+        top-0 
+        bg-background 
+        w-full  
+        h-10 
+        group/title 
+        justify-between 
+        items-center 
+        pr-4 
+        text-Neutrals/neutrals-8
+  "
+      >
+        <span
+          className="text-Neutrals-8 
+        font-bold 
+        text-xs"
+        >
+          FOLDERS
+        </span>
         <Toottip message="Create Folder">
           <PlusIcon
-            size={16}
             onClick={addFolderHandler}
-            className=" group-hover/title:inline-block hidden cursor-pointer hover:dark:text-white"
+            size={16}
+            className="group-hover/title:inline-block
+            hidden 
+            cursor-pointer
+            hover:dark:text-white
+          "
           />
         </Toottip>
       </div>
@@ -112,7 +139,7 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
               key={folder.id}
               title={folder.title}
               listType="folder"
-              id={folder.iconId}
+              id={folder.id}
               iconId={folder.iconId}
             />
           ))}
