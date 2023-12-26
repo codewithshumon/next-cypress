@@ -1,0 +1,34 @@
+import {
+  appFoldersType,
+  appWorkspacesType,
+} from '@/lib/providers/StateProvider';
+import { Folder, workspace } from '@/lib/supabase/supabaseTypes';
+import React from 'react';
+import CustomDialogTrigger from '../global/CustomDialogTrigger';
+import BannerUploadForm from './BannerUploadForm';
+
+interface BannerUploadProps {
+  children: React.ReactNode;
+  className?: string;
+  dirType: 'workspace' | 'file' | 'folder';
+  id: string;
+}
+
+const BannerUpload: React.FC<BannerUploadProps> = ({
+  id,
+  dirType,
+  children,
+  className,
+}) => {
+  return (
+    <CustomDialogTrigger
+      header="Upload Banner"
+      content={<BannerUploadForm dirType={dirType} id={id} />}
+      className={className}
+    >
+      {children}
+    </CustomDialogTrigger>
+  );
+};
+
+export default BannerUpload;

@@ -4,23 +4,23 @@ import { v4 } from 'uuid';
 import clsx from 'clsx';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { PlusIcon, Trash } from 'lucide-react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useToast } from '../ui/use-toast';
 
 import { createFile, updateFile, updateFolder } from '@/lib/supabase/queries';
 import { useAppState } from '@/lib/providers/StateProvider';
 import { useSupabaseUser } from '@/lib/providers/SupabaseUserProvider';
 import { File } from '@/lib/supabase/supabaseTypes';
 
-import EmojiPicker from '../global/EmojiPicker';
 import Toottip from '../global/Toottip';
+import EmojiPicker from '../global/EmojiPicker';
 
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '../ui/accordion';
-import { useToast } from '../ui/use-toast';
 
 interface DropdownProps {
   title: string;
